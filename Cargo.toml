@@ -1,0 +1,21 @@
+[package]
+name = "rs-calc"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ansi_term = "0.12.1"
+color-eyre = "0.6.2"
+inquire = "0.5.3"
+nalgebra = "0.32.1"
+
+# optimize for reasonable compile speed
+[profile.release]
+strip = "symbols"
+lto = "thin"
+opt-level = 3
+debug = 0
+overflow-checks = false
+panic = "abort"
