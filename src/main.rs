@@ -3,7 +3,7 @@ use inquire::{
     ui::{Attributes, Color, RenderConfig, StyleSheet},
     Select,
 };
-use nalgebra::Vector2;
+use nalgebra::{Vector2, Vector3};
 
 pub mod utils;
 
@@ -39,8 +39,8 @@ fn main() -> Result<()> {
         }
     }
 
-    fn handle_vector_input(operation: impl Fn(Vector2<f64>, Vector2<f64>) -> Vector2<f64>) {
-        match utils::get_vector_input() {
+    fn handle_2d_vector_input(operation: impl Fn(Vector2<f64>, Vector2<f64>) -> Vector2<f64>) {
+        match utils::get_2d_vector_input() {
             Ok(components) => {
                 println!("{}: {}\n", utils::answer(), operation(Vector2::new(components.0, components.1), Vector2::new(components.2, components.3)));
             },
@@ -48,10 +48,37 @@ fn main() -> Result<()> {
         }
     }
 
-    fn handle_scale_mul_input(operation: impl Fn(Vector2<f64>, f64) -> Vector2<f64>) {
-        match utils::get_scale_mul_input() {
+    fn handle_2d_scalar_input(operation: impl Fn(Vector2<f64>, f64) -> Vector2<f64>) {
+        match utils::get_2d_scalar_input() {
             Ok(components) => {
                 println!("{}: {}\n", utils::answer(), operation(Vector2::new(components.0, components.1), components.2));
+            },
+            Err(_) => println!("The input is an invalid float number, please try again.")
+        }
+    }
+
+    fn handle_3d_vector_input(operation: impl Fn(Vector3<f64>, Vector3<f64>) -> Vector3<f64>) {
+        match utils::get_3d_vector_input() {
+            Ok(components) => {
+                println!("{}: {}\n", utils::answer(), operation(Vector3::new(components.0, components.1, components.2), Vector3::new(components.3, components.4, components.5)));
+            },
+            Err(_) => println!("The input is not a valid float for the vector component, please try again."),
+        }
+    }
+
+    fn handle_3d_dot_input(operation: impl Fn(Vector3<f64>, Vector3<f64>) -> f64) {
+        match utils::get_3d_vector_input() {
+            Ok(components) => {
+                println!("{}: {}\n", utils::answer(), operation(Vector3::new(components.0, components.1, components.2), Vector3::new(components.3, components.4, components.5)));
+            },
+            Err(_) => println!("The input is not a valid float for the vector component, please try again."),
+        }
+    }
+
+    fn handle_3d_scalar_input(operation: impl Fn(Vector3<f64>, f64) -> Vector3<f64>) {
+        match utils::get_3d_scalar_input() {
+            Ok(components) => {
+                println!("{}: {}\n", utils::answer(), operation(Vector3::new(components.0, components.1, components.2), components.3));
             },
             Err(_) => println!("The input is an invalid float number, please try again.")
         }
@@ -66,6 +93,11 @@ fn main() -> Result<()> {
             "2D Vector Addition".into(),
             "2D Vector Subtraction".into(),
             "2D Vector Scalar Multiplication".into(),
+            "3D Vector Addition".into(),
+            "3D Vector Subtraction".into(),
+            "3D Vector Scalar Multiplication".into(),
+            "3D Vector Dot Product".into(),
+            "3D Vector Cross Product".into(),
             "Exit".into(),
         ])
         .as_str()
@@ -74,9 +106,14 @@ fn main() -> Result<()> {
             "Subtraction" => handle_input(|a, b| a - b),
             "Multiplication" => handle_input(|a, b| a * b),
             "Division" => handle_input(|a, b| a / b),
-            "2D Vector Addition" => handle_vector_input(|a, b| a + b),
-            "2D Vector Subtraction" => handle_vector_input(|a, b| a - b),
-            "2D Vector Scalar Multiplication" => handle_scale_mul_input(|a, b| a.scale(b)),
+            "2D Vector Addition" => handle_2d_vector_input(|a, b| a + b),
+            "2D Vector Subtraction" => handle_2d_vector_input(|a, b| a - b),
+            "2D Vector Scalar Multiplication" => handle_2d_scalar_input(|a, b| a.scale(b)),
+            "3D Vector Addition" => handle_3d_vector_input(|a, b| a + b),
+            "3D Vector Subtraction" => handle_3d_vector_input(|a, b| a - b),
+            "3D Vector Scalar Multiplication" => handle_3d_scalar_input(|a, b| a.scale(b)),
+            "3D Vector Dot Product" => handle_3d_dot_input(|a, b| a.dot(&b)),
+            "3D Vector Cross Product" => handle_3d_vector_input(|a, b| a.cross(&b)),
             "Exit" => {
                 utils::exit();
                 break;
