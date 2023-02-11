@@ -110,6 +110,29 @@ pub fn get_3d_scalar_input() -> Result<(f64, f64, f64, f64), std::num::ParseFloa
     Ok((nums[0], nums[1], nums[2], nums[3]))
 }
 
+pub fn get_3d_translation_input() -> Result<(f64, f64, f64, f64, f64, f64), std::num::ParseFloatError> {
+
+    let mut input = String::new();
+
+    println!("Enter float values for the 3D Vector to be summed with a 3D Point");
+
+    std::io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read the line");
+
+    let values = input.split_whitespace();
+    let mut nums = [0.0; 6];
+
+    for (i, value) in values.enumerate() {
+        nums[i] = value.parse()?;
+        if i == 5 {
+            break;
+        }
+    }
+
+    Ok((nums[0], nums[1], nums[2], nums[3], nums[4], nums[5]))
+}
+
 pub fn answer() -> String {
     let res = Colour::Green.paint("\nThe answer is");
 

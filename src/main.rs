@@ -3,7 +3,7 @@ use inquire::{
     ui::{Attributes, Color, RenderConfig, StyleSheet},
     Select,
 };
-use nalgebra::{Vector2, Vector3};
+use nalgebra::{Vector2, Vector3, Point3};
 
 pub mod utils;
 
@@ -84,6 +84,15 @@ fn main() -> Result<()> {
         }
     }
 
+    fn handle_3d_translation_input(operation: impl Fn(Vector3<f64>, Point3<f64>) -> Point3<f64>) {
+        match utils::get_3d_translation_input() {
+            Ok(components) => {
+                println!("{}: {}\n", utils::answer(), operation(Vector3::new(components.0, components.1, components.2), Point3::new(components.3, components.4, components.5)));
+            },
+            Err(_) => println!("The input is an invalid float number, please try again.")
+        }
+    }
+
     loop {
         match menu(&[
             "Addition".into(),
@@ -98,6 +107,7 @@ fn main() -> Result<()> {
             "3D Vector Scalar Multiplication".into(),
             "3D Vector Dot Product".into(),
             "3D Vector Cross Product".into(),
+            "3D Translation (b = a + ab)".into(),
             "Exit".into(),
         ])
         .as_str()
@@ -114,6 +124,7 @@ fn main() -> Result<()> {
             "3D Vector Scalar Multiplication" => handle_3d_scalar_input(|a, b| a.scale(b)),
             "3D Vector Dot Product" => handle_3d_dot_input(|a, b| a.dot(&b)),
             "3D Vector Cross Product" => handle_3d_vector_input(|a, b| a.cross(&b)),
+            "3D Translation (b = a + ab)" => handle_3d_translation_input(|a, b| b + a),
             "Exit" => {
                 utils::exit();
                 break;
