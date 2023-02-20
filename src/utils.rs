@@ -2,6 +2,8 @@ use std::io::stdin;
 
 use ansi_term::Colour;
 
+type OpMatrix2<T> = Result<(T, T, T, T, T, T, T, T), std::num::ParseFloatError>;
+
 pub fn get_input() -> Result<(f64, f64), std::num::ParseFloatError> {
     let mut num1 = String::new();
     println!("Enter the first operand");
@@ -86,6 +88,28 @@ pub fn get_3d_vector_input() -> Result<(f64, f64, f64, f64, f64, f64), std::num:
     }
 
     Ok((nums[0], nums[1], nums[2], nums[3], nums[4], nums[5]))
+}
+
+pub fn get_2d_matrix_input() -> OpMatrix2<f64> {
+    let mut input = String::new();
+
+    println!("Enter float values for the 2D Matrices, separated by spaces (Ex: 2.8 4.3 2.0 4.6 2 3 6.5 3): ");
+
+    std::io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read the line");
+
+    let values = input.split_whitespace();
+    let mut nums = [0.0; 8];
+
+    for (i, value) in values.enumerate() {
+        nums[i] = value.parse()?;
+        if i == 7 {
+            break;
+        }
+    }
+
+    Ok((nums[0], nums[1], nums[2], nums[3], nums[4], nums[5], nums[6], nums[7]))
 }
 
 pub fn get_3d_scalar_input() -> Result<(f64, f64, f64, f64), std::num::ParseFloatError> {
