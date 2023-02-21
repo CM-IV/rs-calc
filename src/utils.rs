@@ -2,7 +2,12 @@ use std::io::stdin;
 
 use ansi_term::Colour;
 
-type OpMatrix2<T> = Result<(T, T, T, T, T, T, T, T), std::num::ParseFloatError>;
+type OpMatrix19<T> =
+    Result<(T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T), std::num::ParseFloatError>;
+type OpMatrix8<T> = Result<(T, T, T, T, T, T, T, T), std::num::ParseFloatError>;
+type OpVector6<T> = Result<(T, T, T, T, T, T), std::num::ParseFloatError>;
+type OpVector4<T> = Result<(T, T, T, T), std::num::ParseFloatError>;
+type OpVector3<T> = Result<(T, T, T), std::num::ParseFloatError>;
 
 pub fn get_input() -> Result<(f64, f64), std::num::ParseFloatError> {
     let mut num1 = String::new();
@@ -22,8 +27,7 @@ pub fn get_input() -> Result<(f64, f64), std::num::ParseFloatError> {
     Ok((num1, num2))
 }
 
-pub fn get_2d_vector_input() -> Result<(f64, f64, f64, f64), std::num::ParseFloatError> {
-
+pub fn get_2d_vector_input() -> OpVector4<f64> {
     let mut input = String::new();
 
     println!("Enter float values for the two vectors, separated by spaces (Ex: 2.8 4.3 2.0 3.8): ");
@@ -45,10 +49,12 @@ pub fn get_2d_vector_input() -> Result<(f64, f64, f64, f64), std::num::ParseFloa
     Ok((nums[0], nums[1], nums[2], nums[3]))
 }
 
-pub fn get_2d_scalar_input() -> Result<(f64, f64, f64), std::num::ParseFloatError> {
+pub fn get_2d_scalar_input() -> OpVector3<f64> {
     let mut input = String::new();
 
-    println!("Enter float values and a third scalar value, separated by spaces (Ex: 2.8 4.3 2.0): ");
+    println!(
+        "Enter float values and a third scalar value, separated by spaces (Ex: 2.8 4.3 2.0): "
+    );
 
     std::io::stdin()
         .read_line(&mut input)
@@ -67,8 +73,7 @@ pub fn get_2d_scalar_input() -> Result<(f64, f64, f64), std::num::ParseFloatErro
     Ok((nums[0], nums[1], nums[2]))
 }
 
-pub fn get_3d_vector_input() -> Result<(f64, f64, f64, f64, f64, f64), std::num::ParseFloatError> {
-
+pub fn get_3d_vector_input() -> OpVector6<f64> {
     let mut input = String::new();
 
     println!("Enter float values for the two 3 Dimensional vectors (Ex: a1 a2 a3 b1 b2 b3, where →a=⟨a1,a2,a3⟩ and →b=⟨b1,b2,b3⟩) ");
@@ -90,7 +95,7 @@ pub fn get_3d_vector_input() -> Result<(f64, f64, f64, f64, f64, f64), std::num:
     Ok((nums[0], nums[1], nums[2], nums[3], nums[4], nums[5]))
 }
 
-pub fn get_2d_matrix_input() -> OpMatrix2<f64> {
+pub fn get_2d_matrix_input() -> OpMatrix8<f64> {
     let mut input = String::new();
 
     println!("Enter float values for the 2D Matrices, separated by spaces (Ex: 2.8 4.3 2.0 4.6 2 3 6.5 3): ");
@@ -109,10 +114,37 @@ pub fn get_2d_matrix_input() -> OpMatrix2<f64> {
         }
     }
 
-    Ok((nums[0], nums[1], nums[2], nums[3], nums[4], nums[5], nums[6], nums[7]))
+    Ok((
+        nums[0], nums[1], nums[2], nums[3], nums[4], nums[5], nums[6], nums[7],
+    ))
 }
 
-pub fn get_3d_scalar_input() -> Result<(f64, f64, f64, f64), std::num::ParseFloatError> {
+pub fn get_3d_matrix_input() -> OpMatrix19<f64> {
+    let mut input = String::new();
+
+    println!("Enter 18 float values for two 3D Matrices, separated by spaces (Ex: 2.8 4.3 2.0 4.6 ... 3): ");
+
+    std::io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read the line");
+
+    let values = input.split_whitespace();
+    let mut nums = [0.0; 18];
+
+    for (i, value) in values.enumerate() {
+        nums[i] = value.parse()?;
+        if i == 17 {
+            break;
+        }
+    }
+
+    Ok((
+        nums[0], nums[1], nums[2], nums[3], nums[4], nums[5], nums[6], nums[7], nums[8], nums[9],
+        nums[10], nums[11], nums[12], nums[13], nums[14], nums[15], nums[16], nums[17],
+    ))
+}
+
+pub fn get_3d_scalar_input() -> OpVector4<f64> {
     let mut input = String::new();
 
     println!("Enter float values for a 3D vector and a fourth scalar value separated by spaces (Ex: 2.8 4.3 2.0 3.5): ");
@@ -134,8 +166,7 @@ pub fn get_3d_scalar_input() -> Result<(f64, f64, f64, f64), std::num::ParseFloa
     Ok((nums[0], nums[1], nums[2], nums[3]))
 }
 
-pub fn get_3d_translation_input() -> Result<(f64, f64, f64, f64, f64, f64), std::num::ParseFloatError> {
-
+pub fn get_3d_translation_input() -> OpVector6<f64> {
     let mut input = String::new();
 
     println!("Enter float values for the 3D Vector to be summed with a 3D Point");
@@ -175,7 +206,7 @@ pub fn greet() -> String {
     \|__|\|__|\_________\              \|_______|\|__|\|__|\|_______|\|_______|
              \|_________|                                                      
 
-    "#
+    "#,
     );
 
     art.to_string()
