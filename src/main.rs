@@ -1,4 +1,4 @@
-use color_eyre::eyre::Result;
+use anyhow::Result;
 use inquire::{
     ui::{Attributes, Color, RenderConfig, StyleSheet},
     Select,
@@ -7,12 +7,12 @@ use nalgebra::{Matrix2, Matrix3, Point3, Vector2, Vector3};
 
 pub mod utils;
 
-fn get_render_cfg() -> RenderConfig {
+fn get_render_cfg() -> RenderConfig<'static> {
     RenderConfig {
         answer: StyleSheet::new()
             .with_attr(Attributes::ITALIC)
-            .with_fg(Color::LightCyan),
-        help_message: StyleSheet::new().with_fg(Color::LightCyan),
+            .with_fg(Color::LightRed),
+        help_message: StyleSheet::new().with_fg(Color::LightRed),
         ..Default::default()
     }
 }
@@ -36,9 +36,9 @@ fn handle_2d_vector_input(operation: impl Fn(Vector2<f64>, Vector2<f64>) -> Vect
                 )
             );
         }
-        Err(_) => println!(
-            "The input is not a valid float for the vector component, please try again."
-        ),
+        Err(_) => {
+            println!("The input is not a valid float for the vector component, please try again.")
+        }
     }
 }
 
@@ -67,9 +67,9 @@ fn handle_3d_vector_input(operation: impl Fn(Vector3<f64>, Vector3<f64>) -> Vect
                 )
             );
         }
-        Err(_) => println!(
-            "The input is not a valid float for the vector component, please try again."
-        ),
+        Err(_) => {
+            println!("The input is not a valid float for the vector component, please try again.")
+        }
     }
 }
 
@@ -95,9 +95,12 @@ fn handle_2d_matrix_det_input(operation: impl Fn(Matrix2<f64>) -> f64) {
             println!(
                 "{}: {}\n",
                 utils::answer(),
-                operation(
-                    Matrix2::new(components.0, components.1, components.2, components.3),
-                )
+                operation(Matrix2::new(
+                    components.0,
+                    components.1,
+                    components.2,
+                    components.3
+                ),)
             );
         }
         Err(_) => println!("The input is an invalid float number, please try again."),
@@ -110,9 +113,12 @@ fn handle_2d_matrix_inv_input(operation: impl Fn(Matrix2<f64>) -> Matrix2<f64>) 
             println!(
                 "{}: {}\n",
                 utils::answer(),
-                operation(
-                    Matrix2::new(components.0, components.1, components.2, components.3),
-                )
+                operation(Matrix2::new(
+                    components.0,
+                    components.1,
+                    components.2,
+                    components.3
+                ),)
             );
         }
         Err(_) => println!("The input is an invalid float number, please try again."),
@@ -125,9 +131,17 @@ fn handle_3d_matrix_inv_input(operation: impl Fn(Matrix3<f64>) -> Matrix3<f64>) 
             println!(
                 "{}: {}\n",
                 utils::answer(),
-                operation(
-                    Matrix3::new(components.0, components.1, components.2, components.3, components.4, components.5, components.6, components.7, components.8),
-                )
+                operation(Matrix3::new(
+                    components.0,
+                    components.1,
+                    components.2,
+                    components.3,
+                    components.4,
+                    components.5,
+                    components.6,
+                    components.7,
+                    components.8
+                ),)
             );
         }
         Err(_) => println!("The input is an invalid float number, please try again."),
@@ -140,9 +154,17 @@ fn handle_3d_matrix_det_input(operation: impl Fn(Matrix3<f64>) -> f64) {
             println!(
                 "{}: {}\n",
                 utils::answer(),
-                operation(
-                    Matrix3::new(components.0, components.1, components.2, components.3, components.4, components.5, components.6, components.7, components.8),
-                )
+                operation(Matrix3::new(
+                    components.0,
+                    components.1,
+                    components.2,
+                    components.3,
+                    components.4,
+                    components.5,
+                    components.6,
+                    components.7,
+                    components.8
+                ),)
             );
         }
         Err(_) => println!("The input is an invalid float number, please try again."),
@@ -197,9 +219,9 @@ fn handle_3d_dot_input(operation: impl Fn(Vector3<f64>, Vector3<f64>) -> f64) {
                 )
             );
         }
-        Err(_) => println!(
-            "The input is not a valid float for the vector component, please try again."
-        ),
+        Err(_) => {
+            println!("The input is not a valid float for the vector component, please try again.")
+        }
     }
 }
 
@@ -236,8 +258,6 @@ fn handle_3d_translation_input(operation: impl Fn(Vector3<f64>, Point3<f64>) -> 
 }
 
 fn main() -> Result<()> {
-    color_eyre::install()?;
-
     println!("{}", utils::greet());
     println!("By CM-IV <chuck@civdev.xyz>\n");
 
@@ -295,7 +315,9 @@ fn main() -> Result<()> {
                     .expect("oops, something went wrong that shouldn't have!")
             }),
             "2D Matrix Determinant" => handle_2d_matrix_det_input(|a| a.determinant()),
-            "2D Matrix Inversion" => handle_2d_matrix_inv_input(|a| a.try_inverse().expect("something went wrong")),
+            "2D Matrix Inversion" => {
+                handle_2d_matrix_inv_input(|a| a.try_inverse().expect("something went wrong"))
+            }
             "3D Matrix Addition" => handle_3d_matrix_input(|a, b| a + b),
             "3D Matrix Subtraction" => handle_3d_matrix_input(|a, b| a - b),
             "3D Matrix Multiplication" => handle_3d_matrix_input(|a, b| a * b),
@@ -305,7 +327,9 @@ fn main() -> Result<()> {
                     .expect("oops, something went wrong that shouldn't have!")
             }),
             "3D Matrix Determinant" => handle_3d_matrix_det_input(|a| a.determinant()),
-            "3D Matrix Inversion" => handle_3d_matrix_inv_input(|a| a.try_inverse().expect("something wrong happened")),
+            "3D Matrix Inversion" => {
+                handle_3d_matrix_inv_input(|a| a.try_inverse().expect("something wrong happened"))
+            }
             "2D Vector Addition" => handle_2d_vector_input(|a, b| a + b),
             "2D Vector Subtraction" => handle_2d_vector_input(|a, b| a - b),
             "2D Vector Scalar Multiplication" => handle_2d_scalar_input(|a, b| a.scale(b)),

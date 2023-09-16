@@ -6,16 +6,18 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ansi_term = "0.12.1"
-color-eyre = "0.6.2"
-inquire = "0.5.3"
-nalgebra = "0.32.1"
+anyhow = "1.0.75"
+nalgebra = "0.32.3"
+inquire = { git = "https://github.com/mikaelmello/inquire", rev = "3efb148c5cb6523d9cfb1cd07a0d8c093b9ed165" }
+owo-colors = "3.5.0"
+ecow = "0.1.2"
 
-# optimize for reasonable compile speed
+# optimize for size
 [profile.release]
-strip = "symbols"
-lto = "thin"
-opt-level = 3
+strip = true
+lto = true
+opt-level = "z"
 debug = 0
 overflow-checks = false
 panic = "abort"
+codegen-units = 1
